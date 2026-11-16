@@ -2385,10 +2385,10 @@ if (PWA) {
 
 /* ---------- speech ---------- */
 let deVoice = null;
-function initVoices() { try { const v = speechSynthesis.getVoices(); deVoice = v.find(x => /^de(-|_)DE/i.test(x.lang)) || v.find(x => /^de/i.test(x.lang)) || null; } catch (e) {} }
+function initVoices() { try { const score = x => (/natural|neural|online|premium|enhanced|wavenet|studio/i.test(x.name) ? 8 : 0) + (/google/i.test(x.name) ? 4 : 0) + (/katja|seraphina|amala|anna|petra|helena|vicki|marlene/i.test(x.name) ? 2 : 0) + (/^de(-|_)DE/i.test(x.lang) ? 1 : 0) - (/compact|espeak/i.test(x.name) ? 6 : 0); deVoice = speechSynthesis.getVoices().filter(x => /^de/i.test(x.lang)).sort((a, b) => score(b) - score(a))[0] || null; } catch (e) {} }
 if ('speechSynthesis' in window) { initVoices(); speechSynthesis.onvoiceschanged = initVoices; }
-function speak(text) {
-  try { const u = new SpeechSynthesisUtterance(text.replace(/\|/g, '').replace(/…/g, ' ')); u.lang = 'de-DE'; if (deVoice) u.voice = deVoice; u.rate = .9; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) {}
+function speak(text, natural) {
+  try { const u = new SpeechSynthesisUtterance(text.replace(/\|/g, '').replace(/…/g, ' ')); u.lang = 'de-DE'; if (deVoice) u.voice = deVoice; u.rate = natural ? 1 : .9; speechSynthesis.cancel(); speechSynthesis.speak(u); } catch (e) {}
 }
 const canSpeak = () => 'speechSynthesis' in window;
 
@@ -2815,7 +2815,7 @@ function talkStart(id) {
   const first = stepLine(sc.steps[0]);
   S.talk = { id, sc, mode, i: 0, tries: 0, ok: 0, n: 0, log: [first], turns: [], opener: first.de, busy: false, done: false, hint: false, typed: false };
   S.micMsg = '';
-  speak(first.de);
+  annaSay(first.de);
   render();
 }
 function talkFinish() {
@@ -2830,8 +2830,8 @@ function talkAdvance() {
   const t = S.talk, st = t.sc.steps[t.i]; let say = '';
   if (st.reply) { t.log.push({ who: 't', de: st.reply, en: st.replyEn }); say = st.reply + ' '; }
   t.i++; t.tries = 0; t.hint = false;
-  if (t.i >= t.sc.steps.length) { talkFinish(); if (say) speak(say); return; }
-  const next = stepLine(t.sc.steps[t.i]); t.log.push(next); speak(say + next.de);
+  if (t.i >= t.sc.steps.length) { talkFinish(); if (say) annaSay(say); return; }
+  const next = stepLine(t.sc.steps[t.i]); t.log.push(next); annaSay(say + next.de);
 }
 function talkGuided(text) {
   const t = S.talk, st = t.sc.steps[t.i], n = tnorm(text);
@@ -2845,7 +2845,7 @@ const AI_COPY = { rate_limited: ['Gerade zu viele Anfragen. Versuch es gleich no
 async function talkAI(text) {
   const t = S.talk;
   t.turns.push({ role: 'user', content: text }); t.busy = true; render();
-  const rules = 'You are Anna, a warm, patient German tutor inside a speaking-practice app for a beginner preparing for the Goethe-Zertifikat A1 (Start Deutsch 1).\nRole-play scene: ' + t.sc.ai + '\nYou opened the conversation with: "' + t.opener + '"\nRules: use only simple A1 German; at most 2 short sentences; always end with ONE easy question that keeps the scene going. The learner’s messages may come from speech recognition, so ignore missing punctuation and capital letters. Stay in the scene and stay friendly.\nReply with ONLY a JSON object: {"de": your next line in German, "en": its English translation, "fix": the learner’s last message rewritten as correct, natural A1 German (empty string if it was already fine), "why": one short English sentence explaining the main correction (empty string if none)}. If the learner wrote in English, put the German way to say it in "fix".';
+  const rules = 'You are Anna, a warm, patient German tutor inside a speaking-practice app for a beginner preparing for the Goethe-Zertifikat A1 (Start Deutsch 1).\nRole-play scene: ' + t.sc.ai + '\nYou opened the conversation with: "' + t.opener + '"\nRules: speak natural, everyday spoken German, the way a friendly native speaker really talks (for example \"Ach so!\", \"Super!\", \"Na klar.\", \"Gern!\", \"Alles klar.\"), never textbook-stiff, but keep the words and grammar at A1 level; at most 2 short sentences; always end with ONE easy question that keeps the scene going. The learner’s messages may come from speech recognition, so ignore missing punctuation and capital letters. Stay in the scene and stay friendly.\nReply with ONLY a JSON object: {"de": your next line in German, "en": its English translation, "fix": the learner’s last message rewritten as correct, natural A1 German (empty string if it was already fine), "why": one short English sentence explaining the main correction (empty string if none)}. If the learner wrote in English, put the German way to say it in "fix".';
   try {
     const out = PWA ? await cloudAnna(t) : await AI.json([{ role: 'user', content: rules }, ...t.turns.slice(-11)], { modelTier: 'quick', cache: false });
     if (S.talk !== t || t.done) return;
@@ -2854,7 +2854,7 @@ async function talkAI(text) {
     if (out.fix && tnorm(out.fix) !== tnorm(text)) t.log.push({ who: 'f', ai: true, fix: String(out.fix), why: String(out.why || '') });
     else t.log.push({ who: 'f', ok: true, ai: true });
     t.log.push({ who: 't', de: out.de, en: String(out.en || '') }); t.n++;
-    speak(out.de);
+    annaSay(out.de);
   } catch (e) {
     if (S.talk !== t) return;
     t.turns.pop();
@@ -2898,7 +2898,7 @@ function micToggle() {
 }
 function bubble(l) {
   if (l.who === 'u') return `<div class="bub me">${esc(l.de)}</div>`;
-  if (l.who === 't') return `<div class="bub anna">${canSpeak() ? `<button class="speak" data-speak="${esc(l.de)}" aria-label="Vorlesen">${SPEAKER}</button>` : ''}${l.card ? `<div class="tcard"><span>${esc(l.card[0])}</span><b>${esc(l.card[1])}</b></div>` : ''}<div>${esc(l.de)}</div>${tr(esc(l.en))}</div>`;
+  if (l.who === 't') return `<div class="bub anna">${canSpeak() || annaVoiceOn() ? `<button class="speak" data-anna="${esc(l.de)}" aria-label="Vorlesen">${SPEAKER}</button>` : ''}${l.card ? `<div class="tcard"><span>${esc(l.card[0])}</span><b>${esc(l.card[1])}</b></div>` : ''}<div>${esc(l.de)}</div>${tr(esc(l.en))}</div>`;
   if (l.ai && l.ok) return `<div class="fb ok">✓ Gut gesagt!${tr('Well said!')}</div>`;
   if (l.ai) return `<div class="fb fix"><b>Besser so:</b>${tr('better like this')}<div class="model">${canSpeak() ? `<button class="speak" data-speak="${esc(l.fix)}" aria-label="Vorlesen">${SPEAKER}</button>` : ''}${esc(l.fix)}</div>${tr(esc(l.why))}</div>`;
   if (l.note) return `<div class="fb fix">${esc(l.note)}${tr(esc(l.noteEn))}</div>`;
@@ -2930,6 +2930,43 @@ function viewSprechen() {
 }
 if (!PWA && window.claude?.use) { try { claude.use('sample').then(f => { AI = f || null; if (AI && route() === 'sprechen' && !S.talk) render(); }).catch(() => {}); } catch (e) {} }
 
+
+/* ---------- Anna's voice ----------
+   With an account (installable app): a natural AI voice (Gemini TTS) made on the server, cached on the phone,
+   so each sentence is only made once. Otherwise, or if that fails: the best German voice on the device. */
+const VOICE_CACHE = 'sd1-voice-v1';
+let annaAudio = null, annaSeq = 0;
+const annaVoiceOn = () => !!(PWA && cloud && cloud.user && cloud.sb && !S.voiceOff);
+function pcmToWav(b64, rate) {
+  const pcm = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+  const buf = new ArrayBuffer(44 + pcm.length), v = new DataView(buf), w = (o, s) => [...s].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+  w(0, 'RIFF'); v.setUint32(4, 36 + pcm.length, true); w(8, 'WAVE'); w(12, 'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+  v.setUint32(24, rate, true); v.setUint32(28, rate * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); w(36, 'data'); v.setUint32(40, pcm.length, true);
+  new Uint8Array(buf, 44).set(pcm);
+  return new Blob([buf], { type: 'audio/wav' });
+}
+async function annaVoiceBlob(text) {
+  const key = 'https://voice.local/' + encodeURIComponent(text);
+  let c = null; try { c = await caches.open(VOICE_CACHE); const hit = await c.match(key); if (hit) return await hit.blob(); } catch (e) {}
+  const { data, error } = await cloud.sb.functions.invoke('anna', { body: { say: text } });
+  if (error || !data || !data.audio) throw new Error('voice');
+  const mime = String(data.mime || '');
+  const blob = /wav/i.test(mime) ? new Blob([Uint8Array.from(atob(data.audio), ch => ch.charCodeAt(0))], { type: 'audio/wav' }) : pcmToWav(data.audio, +((mime.match(/rate=(\d+)/) || [])[1] || 24000));
+  try { if (c) await c.put(key, new Response(blob, { headers: { 'Content-Type': 'audio/wav' } })); } catch (e) {}
+  return blob;
+}
+function annaSay(text) {
+  text = String(text || '').trim(); if (!text) return;
+  const my = ++annaSeq;
+  try { annaAudio?.pause(); speechSynthesis.cancel(); } catch (e) {}
+  if (!annaVoiceOn()) { speak(text, true); return; }
+  annaVoiceBlob(text).then(blob => {
+    if (my !== annaSeq) return;
+    const a = new Audio(URL.createObjectURL(blob)); annaAudio = a;
+    a.onended = () => URL.revokeObjectURL(a.src);
+    return a.play();
+  }).catch(() => { if (my === annaSeq) speak(text, true); });
+}
 function render() {
   const r = route();
   document.querySelectorAll('.tabs a').forEach(a => a.setAttribute('aria-current', a.getAttribute('href') === '#' + r ? 'page' : 'false'));
@@ -2946,6 +2983,7 @@ document.addEventListener('click', e => {
   const d = t.dataset;
   if (d.speak !== undefined) { e.stopPropagation(); speak(d.speak); return; }
   if (d.bk) { backup(d.bk); return; }
+  if (d.anna !== undefined) { e.stopPropagation(); annaSay(d.anna); return; }
   if (d.cloud) { cloudAuth(d.cloud); return; }
   if (d.scene) { talkStart(d.scene); return; }
   if (d.talkMode) { S.talkMode = d.talkMode; render(); return; }
