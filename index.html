@@ -199,6 +199,94 @@ select.inp{font-size:16px;padding:10px 12px;width:auto}
 .acct{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}.acct input{min-width:0;font:inherit;font-size:16px;padding:12px 14px;border:1.5px solid var(--line);border-radius:var(--r-ctl);background:var(--surface);color:var(--ink)}
 .bkmsg{font-weight:800}.bkmsg.ok{color:var(--ok)}.bkmsg.bad{color:var(--bad)}
 @media (prefers-reduced-motion:no-preference){.fc{transition:transform .18s ease}.fc:active{transform:scale(.985)}}
+
+/* ---------- redesign: navigation ---------- */
+.entog{border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:999px;font-weight:900;font-size:13px;padding:6px 11px;letter-spacing:.04em}
+.entog[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+html.no-en .tr{display:none!important}
+.bnav{display:none;position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);padding:6px max(4px,env(safe-area-inset-left,0px)) calc(6px + env(safe-area-inset-bottom,0px));justify-content:space-around}
+.bnav a{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:var(--muted);font-size:12px;font-weight:800;line-height:1.1;padding:2px 0;min-height:52px}
+.bnav .ic{width:56px;height:30px;border-radius:15px;display:grid;place-items:center;transition:background .15s}
+.bnav svg{width:23px;height:23px}
+.bnav .tr{font-size:9.5px;font-style:normal;text-align:center;line-height:1;opacity:.85}
+.bnav a[aria-current="page"]{color:var(--accent)}
+.bnav a[aria-current="page"] .ic{background:var(--accent-soft)}
+@media (max-width:720px){
+  .tabs{display:none!important}
+  .bnav{display:flex}
+  .top-in{padding-block:8px}
+  main{padding-top:16px;padding-bottom:calc(92px + env(safe-area-inset-bottom,0px))}
+  body.focus .bnav{display:none}
+  body.focus main{padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+  body.focus .top{display:none}
+}
+/* ---------- redesign: building blocks ---------- */
+h1{font-size:26px}
+.sec-h{font-size:12.5px;font-weight:900;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:8px 2px -8px}
+.sec-h .tr{display:inline;margin-left:6px;text-transform:none;letter-spacing:0;font-size:12px}
+.list{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden}
+.lrow{display:flex;align-items:center;gap:12px;padding:12px 14px;min-height:66px;border:0;border-top:1px solid var(--line);background:none;text-align:left;width:100%;color:inherit;text-decoration:none;font:inherit}
+.lrow:first-child{border-top:0}
+.lrow:hover{background:var(--sunken)}
+.lrow .li{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;flex:none;font-size:22px;background:var(--sunken)}
+.lrow .li.hot{background:var(--accent);color:var(--accent-ink)}
+.lrow .lt{flex:1;min-width:0}
+.lrow .lt b{display:block;font-size:16px;font-weight:800;line-height:1.25}
+.lrow .lt .small{display:block;color:var(--muted);font-size:13.5px;line-height:1.3}
+.lrow .lm{flex:none;text-align:right;font-size:13px;color:var(--muted);font-weight:800}
+.lrow .chev{flex:none;color:var(--muted);font-size:22px;line-height:1;margin-left:-4px}
+.badge{display:inline-block;min-width:44px;text-align:center;font-size:12.5px;font-weight:900;padding:3px 8px;border-radius:999px;background:var(--sunken);color:var(--muted)}
+.badge.good{background:var(--ok-bg);color:var(--ok)}.badge.low{background:var(--bad-bg);color:var(--bad)}
+.mini-bar{display:block;height:5px;border-radius:9px;background:var(--sunken);margin-top:7px;overflow:hidden}
+.mini-bar i{display:block;height:100%;background:var(--accent);border-radius:9px}
+.btn.block{display:block;width:100%;text-align:center}
+.seg{display:inline-flex;background:var(--sunken);border-radius:12px;padding:3px;gap:2px}
+.seg button{border:0;background:none;padding:7px 14px;border-radius:9px;font-weight:800;color:var(--muted);font-size:14px}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.1)}
+.chips-scroll{display:flex;gap:8px;overflow-x:auto;padding:2px 0 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin-inline:-2px}
+.chips-scroll::-webkit-scrollbar{display:none}
+.chips-scroll .chip{flex:none}
+details.panel>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:4px 10px;flex-wrap:wrap;position:relative;padding-right:30px}
+details.panel>summary::-webkit-details-marker{display:none}
+details.panel>summary::after{content:"";position:absolute;right:6px;top:calc(50% - 7px);width:9px;height:9px;border-right:2.5px solid var(--muted);border-bottom:2.5px solid var(--muted);transform:rotate(45deg);transition:transform .15s}
+details.panel[open]>summary::after{transform:rotate(-135deg)}
+details.panel>summary h2{font-size:18px}
+details.panel>summary .tr{flex-basis:100%;margin-top:-6px}
+/* today card */
+.today{display:flex;flex-direction:column;gap:16px}
+.today-top{display:flex;align-items:center;gap:16px}
+.ring{width:92px;height:92px;border-radius:50%;flex:none;display:grid;place-items:center;background:conic-gradient(var(--ok) calc(var(--p) * 1%),var(--sunken) 0)}
+.ring>div{width:74px;height:74px;border-radius:50%;background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.ring b{font-size:28px;font-weight:900}
+.ring span{font-size:11px;color:var(--muted);font-weight:800;margin-top:3px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stat{background:var(--sunken);border-radius:12px;padding:10px 6px;text-align:center}
+.stat b{display:block;font-size:20px;font-weight:900;line-height:1.1}
+.stat .small{font-size:12.5px;color:var(--muted)}
+.stat .tr{font-size:11px}
+.install{padding:12px 14px;gap:12px;flex-wrap:nowrap;align-items:flex-start}
+.install>div{flex:1 1 auto}
+.install .row{flex:none;flex-direction:column;gap:6px}
+.install p{font-size:13px}
+.stack>.search{flex:none}
+.sbar{margin:-2px 0 12px}
+@media (hover:none){.kbd-hint{display:none}}
+.install .ico{width:40px;height:40px}
+.install h2{font-size:16px}
+/* rules as a collapsible list */
+.rlist{display:flex;flex-direction:column;gap:8px}
+.rd{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.rd>summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;gap:10px;align-items:center;min-height:56px}
+.rd>summary::-webkit-details-marker{display:none}
+.rd>summary .lt{flex:1;min-width:0}
+.rd>summary b{display:block;font-size:16px;font-weight:900}
+.rd>summary .small{display:block;color:var(--muted)}
+.rd>summary .chev{color:var(--muted);font-size:22px;transition:transform .15s}
+.rd[open]>summary{background:var(--rule-head);color:#FFFFFF}
+.rd[open]>summary .small,.rd[open]>summary .tr,.rd[open]>summary .chev{color:#FFFFFF;opacity:.9}
+.rd[open]>summary .chev{transform:rotate(90deg)}
+.rd .rule{border-radius:0}
+@media (min-width:721px){.rlist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}}
 </style>
 </head>
 <body>
@@ -207,10 +295,12 @@ select.inp{font-size:16px;padding:10px 12px;width:auto}
 <header class="top"><div class="top-in">
   <div class="brand"><span class="flag" aria-hidden="true"><i></i><i></i><i></i></span>Start Deutsch 1</div>
   <nav class="tabs" aria-label="Bereiche">
-    <a href="#start">Start<small class="tr">home</small></a><a href="#karten">Karten<small class="tr">flashcards</small></a><a href="#uebungen">Übungen<small class="tr">exercises</small></a><a href="#sprechen">Sprechen<small class="tr">speaking</small></a><a href="#regeln">Regeln<small class="tr">rules</small></a>
+    <a href="#start">Start<small class="tr">home</small></a><a href="#karten">Karten<small class="tr">flashcards</small></a><a href="#uebungen">Üben<small class="tr">exercises</small></a><a href="#sprechen">Sprechen<small class="tr">speaking</small></a><a href="#regeln">Regeln<small class="tr">rules</small></a>
   </nav>
+  <button class="entog" data-en-toggle aria-pressed="true" title="Englische Hilfe ein/aus (English help on/off)">EN</button>
 </div></header>
 <main id="app"></main>
+<nav class="bnav" aria-label="Bereiche"><a href="#start"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/></svg></span><span>Start</span><small class="tr">home</small></a><a href="#karten"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="13" height="14" rx="2"/><path d="M8 3h11a2 2 0 0 1 2 2v12"/></svg></span><span>Karten</span><small class="tr">flashcards</small></a><a href="#uebungen"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg></span><span>Üben</span><small class="tr">exercises</small></a><a href="#sprechen"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1.1-4.4A8 8 0 1 1 21 12z"/><path d="M9 11h.01M12 11h.01M15 11h.01"/></svg></span><span>Sprechen</span><small class="tr">speaking</small></a><a href="#regeln"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H20v15H6.5A1.5 1.5 0 0 0 5 19.5z"/><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H20"/><path d="M9 8h7M9 11.5h5"/></svg></span><span>Regeln</span><small class="tr">rules</small></a></nav>
 
 <script>
 /*! ts-fsrs 5.4.1 · MIT License · Copyright (c) 2026 Open Spaced Repetition · github.com/open-spaced-repetition/ts-fsrs */
@@ -2370,9 +2460,9 @@ const SHARE_ICON = '<svg class="share" viewBox="0 0 24 24" fill="none" stroke="c
 function installBox() {
   if (!PWA || isStandalone()) return '';
   try { if (localStorage.getItem('sd1-inst-hide')) return ''; } catch (e) {}
-  const how = installEvt ? 'Ein Tipp – dann ist die App auf deinem Startbildschirm und funktioniert auch ohne Internet.' + tr('One tap – then the app is on your home screen and works without internet too.')
-    : isIOS() ? `In Safari: ${SHARE_ICON} <b>Teilen</b> → <b>„Zum Home-Bildschirm“</b>.` + tr('In Safari: tap Share, then “Add to Home Screen”.')
-    : 'Im Browser-Menü <b>⋮</b>: <b>„App installieren“</b> oder <b>„Zum Startbildschirm hinzufügen“</b>.' + tr('In the browser menu ⋮: “Install app” or “Add to home screen”.');
+  const how = installEvt ? 'Auf den Startbildschirm, auch ohne Internet.' + tr('on your home screen, works offline')
+    : isIOS() ? `Safari: ${SHARE_ICON} <b>Teilen</b> → <b>„Zum Home-Bildschirm“</b>` + tr('Safari: Share → “Add to Home Screen”')
+    : 'Browser-Menü <b>⋮</b> → <b>„App installieren“</b>' + tr('browser menu ⋮ → “Install app”');
   return `<section class="panel install"><img class="ico" src="icon-192.png" alt=""><div><h2 style="margin:0">Als App installieren${tr('install as an app')}</h2><p class="small muted" style="margin:4px 0 0">${how}</p></div><div class="row">${installEvt ? `<button class="btn primary" data-install>Installieren${tr('install')}</button>` : ''}<button class="chip" data-inst-hide>Später${tr('later')}</button></div></section>`;
 }
 if (PWA) {
@@ -2470,23 +2560,41 @@ function deckItems(deck) {
 }
 function viewStart() {
   const pool = ITEMS.filter(i => i.a1 || !isNew(i));
-  const due = pool.filter(isDue).length, seen = pool.filter(i => !isNew(i)).length, known = pool.filter(i => boxOf(i) >= 3).length;
-  const decks = DECKS.map(d => { const its = ITEMS.filter(i => i.deck === d.id); const k = its.filter(i => boxOf(i) >= 3).length; return `<div class="deckrow"><div><h3>${d.name} <span class="small muted" style="font-weight:600;font-style:italic">${d.en}</span></h3><div class="small muted">${d.note}${d.noteEn ? ` · <i>${d.noteEn}</i>` : ''}</div></div><div class="small num muted">${k} / ${its.length}</div><div class="bar" style="grid-column:1/-1"><i style="width:${its.length ? Math.round(100 * k / its.length) : 0}%"></i></div></div>`; }).join('');
+  const due = pool.filter(isDue).length, fresh = Math.min(10, pool.filter(isNew).length), seen = pool.filter(i => !isNew(i)).length, known = pool.filter(i => boxOf(i) >= 3).length;
+  const doneToday = Object.values(P.f || {}).filter(f => f && f[6] && dayOf(f[6]) === today()).length;
+  const left = due + fresh, pct = left + doneToday ? Math.round(100 * doneToday / (left + doneToday)) : 100;
+  const g = greeting();
+  const weak = EXERCISES.slice().sort((a, b) => (P.ex[a.id]?.best ?? -1) - (P.ex[b.id]?.best ?? -1))[0];
+  const wb = P.ex[weak.id]?.best;
   const parts = SKILLS.map(s => `<div class="part"><h3>${s.k} <span class="pill">${s.t}</span>${tr(s.en)}</h3><p>${s.ex.map(id => { const e = EXERCISES.find(x => x.id === id); const b = P.ex[id]?.best; return `<a href="#uebungen" data-start-ex="${id}">${e.name}</a>${b != null ? ` <span class="num">(${b}%)</span>` : ''}`; }).join(' · ')}${s.k === 'Sprechen' ? ' · <a href="#sprechen">Sprechen mit Anna</a>' : ''}</p></div>`).join('');
+  const acctState = CLOUD_ON ? (cloud.user ? ' · angemeldet' : ' · nicht angemeldet') : '';
   return `<div class="stack">
     ${installBox()}
-    <div><span class="eyebrow">Goethe-Zertifikat A1</span><h1>Jeden Tag ein bisschen.</h1>${tr('A little every day.')}<p class="lead">Karteikarten mit Wiederholung und Übungen zu allen A1-Wörtern und Regeln von deinen Lernkarten.${tr('Flashcards with spaced repetition and exercises for all the A1 words and rules from your printed cards.')}</p></div>
-    <div class="hero">
-      <section class="panel stack">
-        <div class="due"><b class="num">${due + Math.min(10, pool.filter(isNew).length)}</b><span class="muted">Karten für heute${tr('cards for today')}<span class="small">${due} zum Wiederholen · ${Math.min(10, pool.filter(isNew).length)} neue</span>${tr(`${due} to review · ${Math.min(10, pool.filter(isNew).length)} new`)}</span></div>
-        <div class="row"><button class="btn primary big" data-go-review>Heute lernen${tr('study today')}</button><a class="btn" href="#uebungen">Übungen${tr('exercises')}</a></div>
-        <div class="row small muted"><span class="num">${streak()} Tag${streak() === 1 ? '' : 'e'} in Folge</span>·<span class="num">${seen} von ${pool.length} Karten gesehen</span>·<span class="num">${known} sicher</span></div>${tr(`${streak()} day streak · ${seen} of ${pool.length} cards seen · ${known} known well`)}
-      </section>
-      <section class="panel stack"><h2>Deine Stapel${tr('your decks')}</h2>${decks}</section>
+    <div><span class="eyebrow">Goethe-Zertifikat A1</span><h1>${g[0]}</h1>${tr(g[1])}</div>
+    <section class="panel today">
+      <div class="today-top">
+        <div class="ring" style="--p:${pct}" role="img" aria-label="${doneToday} Karten heute gelernt, ${left} übrig"><div><b class="num">${left}</b><span>übrig</span></div></div>
+        <div style="min-width:0"><h2>${left ? 'Deine Karten für heute' : 'Alles geschafft für heute!'}</h2>${tr(left ? 'your cards for today' : 'all done for today!')}<p class="small muted num" style="margin:6px 0 0">${due} wiederholen · ${fresh} neu${doneToday ? ` · ${doneToday} erledigt` : ''}</p>${tr(`${due} to review · ${fresh} new${doneToday ? ` · ${doneToday} done` : ''}`)}</div>
+      </div>
+      <button class="btn primary big block" data-go-review>${left ? 'Heute lernen' : 'Extra-Runde'}${tr(left ? 'study today' : 'extra round')}</button>
+      <div class="stats">
+        <div class="stat"><b class="num">${streak()}</b><span class="small">Tage in Folge</span>${tr('day streak')}</div>
+        <div class="stat"><b class="num">${seen}</b><span class="small">gesehen</span>${tr('cards seen')}</div>
+        <div class="stat"><b class="num">${known}</b><span class="small">sicher</span>${tr('known well')}</div>
+      </div>
+    </section>
+    <div class="sec-h">Als Nächstes${tr('up next')}</div>
+    <div class="list">
+      ${lrow('href="#sprechen"', '🗣️', '<b>Sprechen mit Anna</b>', `<span class="small">Prüfung Teil 1–3 laut üben</span>${tr('practise speaking parts 1–3 out loud')}`, '')}
+      ${lrow(`data-start-ex="${weak.id}"`, '✏️', `<b>${weak.name}</b>`, `<span class="small">${wb == null ? 'Noch nicht geübt' : 'Dein schwächstes Thema'}</span>${tr((wb == null ? 'not practised yet' : 'your weakest topic') + ' · ' + EX_TR[weak.id][0])}`, bestBadge(wb))}
+      ${lrow('href="#karten"', '🗂️', '<b>Stapel wählen</b>', `<span class="small">Nomen, Verben, Sätze …</span>${tr('choose a deck: nouns, verbs, phrases …')}`, '')}
     </div>
-    <section class="stack"><h2>So trainierst du für die Prüfung${tr('how to train for each part of the exam')}</h2><div class="parts">${parts}</div><p class="small muted">Bestanden ab 60 von 100 Punkten. Hören Teil 2 hörst du nur einmal.${tr('You pass with 60 of 100 points. In Listening part 2 you hear the audio only once.')}</p></section>
-    ${accountBox()}
-    <details class="panel backup"${S.bkOpen ? ' open' : ''}><summary><h2 style="margin:0">Fortschritt sichern</h2><span class="small muted">back up or move your progress</span></summary>
+    <details class="panel exam"${S.examOpen ? ' open' : ''}><summary><h2>Die Prüfung</h2>${tr('the exam – how to train each part')}</summary>
+      <div class="stack" style="margin-top:12px"><div class="parts">${parts}</div><p class="small muted" style="margin:0">Bestanden ab 60 von 100 Punkten. Hören Teil 2 hörst du nur einmal.${tr('You pass with 60 of 100 points. In Listening part 2 you hear the audio only once.')}</p></div></details>
+    <details class="panel settings"${S.setOpen || S.bkOpen || (CLOUD_ON && cloud.msg) ? ' open' : ''}><summary><h2>${CLOUD_ON ? 'Konto & Sicherung' : 'Sicherung'}</h2><span class="small muted">${acctState}</span>${tr(CLOUD_ON ? 'account & backup' : 'backup')}</summary>
+      <div class="stack" style="margin-top:12px">
+        ${accountBox()}
+        <details class="panel backup" style="box-shadow:none"${S.bkOpen ? ' open' : ''}><summary><h2 style="margin:0">Fortschritt sichern</h2><span class="small muted">back up or move your progress</span></summary>
       <div class="stack" style="margin-top:12px">
         <p class="small muted" style="margin:0">Dein Fortschritt ist nur auf diesem Gerät. Erstelle einen Code und füge ihn auf einem anderen Gerät oder in der App wieder ein – nichts geht verloren, neuere Karten gewinnen.${tr('Your progress lives on this device only. Create a code and paste it on another device or in the app – nothing is lost, the newer card wins.')}</p>
         ${PWA ? `<div class="row"><button class="btn" data-bk="file">Als Datei speichern${tr('save as a file')}</button><button class="btn" data-bk="open">Datei laden${tr('load a file')}</button><input type="file" id="bkfile" accept="application/json,.json" hidden></div>` : ''}
@@ -2494,7 +2602,8 @@ function viewStart() {
         <textarea id="bk" spellcheck="false" aria-label="Sicherungs-Code" placeholder="Hier erscheint dein Code – oder füge einen Code ein. (your code appears here – or paste a code)"></textarea>
         <div class="row"><button class="btn primary" data-bk="load">Code übernehmen${tr('import the pasted code')}</button><span id="bkmsg" class="bkmsg ${S.bkMsg ? (S.bkMsg[1] ? 'ok' : 'bad') : ''}">${S.bkMsg ? S.bkMsg[0] : ''}</span></div>
       </div></details>
-    <p class="sync">${syncNote}</p>
+        <p class="sync" style="margin:0">${syncNote}</p>
+      </div></details>
   </div>`;
 }
 
@@ -2535,7 +2644,7 @@ function viewKarten() {
   if (s && s.i < s.list.length) {
     const it = s.list[s.i];
     const pv = s.flipped ? srPreview(it) : null, iv = n => pv ? `<span class="ivl">${fmtIvl(pv[n])}</span>` : '';
-    return `<div class="fc-wrap"><div class="progress-line"><span class="num">Karte ${s.i + 1} von ${s.list.length}${tr(`card ${s.i + 1} of ${s.list.length}`)}</span><button class="chip" data-end-session>Beenden${tr('end')}</button></div>
+    return `<div class="fc-wrap"><div class="progress-line"><span class="num">Karte ${s.i + 1} von ${s.list.length}${tr(`card ${s.i + 1} of ${s.list.length}`)}</span><button class="chip" data-end-session>Beenden${tr('end')}</button></div><div class="bar sbar"><i style="width:${Math.round(100 * s.i / s.list.length)}%"></i></div>
       ${cardFace(it, s.flipped ? 'back' : 'front')}
       <div class="fc-actions${s.flipped ? ' four' : ''}">${s.flipped ? `<button class="btn bad big" data-grade="1">Nochmal${tr('again')}${iv(0)}</button><button class="btn big" data-grade="2">Schwer${tr('hard')}${iv(1)}</button><button class="btn ok big" data-grade="3">Gut${tr('good')}${iv(2)}</button><button class="btn easy big" data-grade="4">Leicht${tr('easy')}${iv(3)}</button>` : `<button class="btn primary big" data-flip style="grid-column:1/-1">Umdrehen${tr('flip the card')}</button>`}</div>
       <p class="small muted" style="text-align:center">${s.flipped ? 'Nochmal = nicht gewusst · Schwer = mit Mühe · Gut = gewusst · Leicht = sofort' + tr('again = didn’t know · hard = with effort · good = knew it · easy = instantly. The time shows when the card comes back.') : 'Leertaste = umdrehen · Tasten 1–4 = bewerten' + tr('keyboard: space = flip · keys 1–4 = rate')}</p></div>`;
@@ -2544,19 +2653,31 @@ function viewKarten() {
     const total = s.right + s.wrong;
     return `<div class="panel stack" style="max-width:520px;margin:0 auto;text-align:center"><span class="eyebrow">Geschafft</span>${tr('done!')}<div class="score num">${s.right}/${total}</div><p class="muted">Karten mit „Nochmal“ kommen bald wieder. Karten, die du weißt, siehst du erst in ein paar Tagen wieder.${tr('Cards marked “again” come back soon. Cards you knew come back in a few days.')}</p><div class="row" style="justify-content:center"><button class="btn primary" data-start-deck="${esc(S.deck)}">Noch eine Runde${tr('one more round')}</button><a class="btn" href="#start">Zur Übersicht${tr('back to home')}</a></div></div>`;
   }
-  const themes = S.deck !== 'faellig' ? [...new Set(deckItems(S.deck).map(i => i.theme).filter(Boolean))] : [];
-  const deckBtns = [{ id: 'faellig', name: 'Heute fällig', en: 'due today' }].concat(DECKS).map(d => `<button class="chip" aria-pressed="${S.deck === d.id}" data-deck="${d.id}">${d.name}${tr(d.en)}</button>`).join('');
-  const count = S.deck === 'faellig' ? ITEMS.filter(i => i.a1 && isDue(i)).length : deckItems(S.deck).filter(i => !S.theme || i.theme === S.theme).length;
-  return `<div class="stack"><div><h1>Karteikarten</h1>${tr('flashcards')}<p class="lead">Wähle einen Stapel. Tippe auf die Karte, sag das Wort laut und dreh sie um. Ehrlich bewerten: „Nochmal“ ist kein Fehler.${tr('Choose a deck. Say the word out loud, then tap the card to flip it. Be honest: “again” is not a mistake.')}</p></div>
-    <section class="panel stack"><div class="row">${deckBtns}</div>
-      <div class="row">${themes.length ? `<label class="small muted" for="theme">Thema <i>(topic)</i></label><select id="theme" class="inp"><option value="">Alle Themen (all topics)</option>${themes.map(t => `<option ${S.theme === t ? 'selected' : ''}>${esc(t)}</option>`).join('')}</select>` : ''}
-        <span class="small muted">Vorderseite <i>(front side)</i></span><button class="chip" aria-pressed="${S.dir === 'de'}" data-dir="de">Deutsch${tr('German')}</button><button class="chip" aria-pressed="${S.dir === 'en'}" data-dir="en">Englisch${tr('English')}</button>
-        </div>${S.deck === 'lektion' ? '<p class="small muted">Diese Verben sind aus deinem Unterricht. Viele stehen nicht auf der offiziellen A1-Liste – gut zu wissen, aber nicht prüfungsrelevant.' + tr('These verbs are from your class. Many are not on the official A1 list – good to know, but not needed for the exam.') + '</p>' : ''}
-      <div class="row"><button class="btn primary big" data-start-deck="${esc(S.deck)}">Start</button><span class="small muted num">${S.deck === 'faellig' ? `${count} fällig + neue Karten${tr(`${count} due + new cards`)}` : `${count} Karten im Stapel · bis zu 20 pro Runde${tr(`${count} cards in this deck · up to 20 per round`)}`}</span></div>
-    </section>
-    <section class="stack"><h2>Alle Karten im Stapel${tr('all cards in this deck')}</h2><div class="grid">${(S.deck === 'faellig' ? ITEMS.filter(i => i.a1 && isDue(i)) : deckItems(S.deck).filter(i => !S.theme || i.theme === S.theme)).slice(0, 60).map(it => `<div class="panel row" style="padding:10px 12px;flex-wrap:nowrap">${img(it.ic, 'mini') ? `<img src="${iconUrl(it.ic)}" alt="" style="width:36px;height:36px;flex:none">` : ''}<div style="min-width:0"><b>${it.kind === 'noun' ? `<span class="art-${esc(it.art.split('/')[0])}">${esc(it.art)}</span> ` : ''}${esc(it.de)}</b><div class="small muted">${esc(it.en)}</div></div><span class="pill" style="margin-left:auto">${['neu','1','2','3','4','5','✓'][boxOf(it)]}</span></div>`).join('') || '<p class="muted">Heute ist nichts fällig. Lerne einen Stapel oder mach eine Übung.' + tr('Nothing is due today. Study a deck or do an exercise.') + '</p>'}</div></section>
+  const themes = [...new Set(deckItems(S.deck === 'faellig' ? 'nomen' : S.deck).map(i => i.theme).filter(Boolean))];
+  const pool = ITEMS.filter(i => i.a1 || !isNew(i));
+  const dueN = pool.filter(isDue).length + Math.min(10, pool.filter(isNew).length);
+  const DI = { nomen: '🏠', verben: '🏃', woerter: '🎨', saetze: '💬', lektion: '📘' };
+  const rows = DECKS.map(d => { const its = ITEMS.filter(i => i.deck === d.id); const k = its.filter(i => boxOf(i) >= 3).length, du = its.filter(isDue).length; const p = its.length ? Math.round(100 * k / its.length) : 0;
+    return lrow(`data-open-deck="${d.id}"`, DI[d.id] || '🗂️', `<b>${d.name}</b>`, `<span class="small">${d.note}${du ? ` · ${du} fällig` : ''}</span>${tr(d.en + (d.noteEn ? ' · ' + d.noteEn : ''))}<span class="mini-bar"><i style="width:${p}%"></i></span>`, `<span class="num">${k}/${its.length}</span>`); }).join('');
+  const browseDeck = S.deck === 'faellig' ? 'nomen' : S.deck;
+  const browse = deckItems(browseDeck).filter(i => !S.theme || i.theme === S.theme);
+  return `<div class="stack"><div><h1>Karteikarten</h1>${tr('flashcards')}</div>
+    <div class="list">${lrow('data-go-review', '⭐', '<b>Heute fällig</b>', `<span class="small">Wiederholen + neue Karten</span>${tr('review + new cards, the best place to start')}`, `<span class="num">${dueN}</span>`, true)}</div>
+    <div class="sec-h">Stapel${tr('decks')}</div>
+    <div class="list">${rows}</div>
+    <div class="row" style="justify-content:space-between"><span class="small muted">Vorderseite${tr('front side of the card')}</span><div class="seg" role="group" aria-label="Vorderseite"><button aria-pressed="${S.dir === 'de'}" data-dir="de">Deutsch</button><button aria-pressed="${S.dir === 'en'}" data-dir="en">Englisch</button></div></div>
+    <p class="small muted" style="margin:0">Tippe auf die Karte, sag das Wort laut und dreh sie um. „Nochmal“ ist kein Fehler.${tr('Tap the card, say the word out loud, then flip it. “Again” is not a mistake.')}</p>
+    <details class="panel browse"${S.browseOpen ? ' open' : ''}><summary><h2>Wörter ansehen</h2>${tr('browse the words')}</summary>
+      <div class="stack" style="margin-top:12px">
+        <div class="chips-scroll">${DECKS.map(d => `<button class="chip" aria-pressed="${browseDeck === d.id}" data-deck="${d.id}">${d.name}</button>`).join('')}</div>
+        ${themes.length ? `<div class="row"><label class="small muted" for="theme">Thema <i>(topic)</i></label><select id="theme" class="inp"><option value="">Alle Themen (all topics)</option>${themes.map(t => `<option ${S.theme === t ? 'selected' : ''}>${esc(t)}</option>`).join('')}</select></div>` : ''}
+        ${browseDeck === 'lektion' ? '<p class="small muted" style="margin:0">Diese Verben sind aus deinem Unterricht. Viele stehen nicht auf der offiziellen A1-Liste.' + tr('These verbs are from your class. Many are not on the official A1 list.') + '</p>' : ''}
+        <div class="list">${browse.slice(0, 80).map(it => `<div class="lrow" style="min-height:56px">${it.ic && ICONS[it.ic] ? `<span class="li"><img src="${iconUrl(it.ic)}" alt=""></span>` : ''}<span class="lt"><b>${it.kind === 'noun' ? `<span class="art-${esc(it.art.split('/')[0])}">${esc(it.art)}</span> ` : ''}${esc(it.de)}</b><span class="small">${esc(it.en)}</span></span><span class="badge">${['neu','1','2','3','4','5','✓'][boxOf(it)]}</span></div>`).join('')}</div>
+        ${browse.length > 80 ? `<p class="small muted" style="margin:0">… und ${browse.length - 80} weitere. Wähle ein Thema.${tr(`… and ${browse.length - 80} more. Choose a topic.`)}</p>` : ''}
+      </div></details>
   </div>`;
 }
+
 
 function viewUebungen() {
   const r = S.run;
@@ -2568,11 +2689,12 @@ function viewUebungen() {
       <div class="row"><button class="btn primary" data-start-ex="${r.ex.id}">Nochmal${tr('try again')}</button><button class="btn" data-ex-menu>Andere Übung${tr('other exercise')}</button></div></div>`;
   }
   const topics = [...new Set(GRAMMAR.map(g => g[0]))];
-  return `<div class="stack"><div><h1>Übungen</h1>${tr('exercises')}<p class="lead">Kurze Runden wie ein Arbeitsblatt, mit Lösung sofort. Die beste Punktzahl wird gespeichert.${tr('Short rounds like a worksheet, with the answer straight away. Your best score is saved.')}</p></div>
-    <div class="grid">${EXERCISES.map(e => `<button class="ex-card" data-start-ex="${e.id}"><div class="k"><h3>${e.name}${tr(EX_TR[e.id][0])}</h3><span class="pill">${e.skill}</span></div><p>${e.desc}${tr(EX_TR[e.id][1])}</p><p class="num">${e.n} Fragen (questions)${P.ex[e.id]?.best != null ? ` · Bestwert (best) ${P.ex[e.id].best}%` : ''}</p></button>`).join('')}</div>
-    <section class="panel stack"><h2>Grammatik nach Thema${tr('grammar by topic')}</h2><div class="row">${topics.map(t => `<button class="chip" data-gtopic="${esc(t)}">${esc(t)}</button>`).join('')}</div></section>
+  const GROUPS = [['Wortschatz', 'vocabulary', '🔤'], ['Lesen', 'reading', '📖'], ['Schreiben', 'writing', '✍️'], ['Grammatik', 'grammar', '🧩'], ['Hören', 'listening', '🎧'], ['Sprechen', 'speaking', '🗣️']];
+  return `<div class="stack"><div><h1>Üben</h1>${tr('exercises')}<p class="lead">Kurze Runden mit Lösung sofort. Grün = Bestanden-Niveau (ab 60 %).${tr('Short rounds with the answer straight away. Green = pass level (60% or more).')}</p></div>
+    ${GROUPS.map(([g, en, ic]) => { const exs = EXERCISES.filter(e => e.skill === g); if (!exs.length) return ''; return `<div class="sec-h">${g}${tr(en)}</div><div class="list">${exs.map(e => lrow(`data-start-ex="${e.id}"`, ic, `<b>${e.name}</b>`, `<span class="small">${EX_TR[e.id][0]} · ${e.n} Fragen</span>`, bestBadge(P.ex[e.id]?.best))).join('')}</div>${g === 'Grammatik' ? `<div class="chips-scroll" aria-label="Grammatik nach Thema">${topics.map(t => `<button class="chip" data-gtopic="${esc(t)}">${esc(t)}</button>`).join('')}</div>` : ''}`; }).join('')}
   </div>`;
 }
+
 function viewQuestion(r) {
   const q = r.qs[r.i];
   let body = '';
@@ -2632,10 +2754,10 @@ function viewRegeln() {
   const secs = [...new Set(DATA.rules.map(r => r[0]))];
   const q = S.ruleQ.toLowerCase();
   const list = DATA.rules.map((r, i) => r.concat([RULES_EN[i]])).filter(r => (!S.ruleSec || r[0] === S.ruleSec) && (!q || JSON.stringify(r).toLowerCase().includes(q)));
-  return `<div class="stack"><div><h1>Regeln</h1>${tr('rules')}<p class="lead">Alle Grammatik-Karten zum Nachschlagen. Rot = besonders gut merken.${tr('All grammar cards to look things up. Red = especially important to remember.')}</p></div>
-    <div class="row"><input id="ruleq" class="inp search" placeholder="Suchen (search) …" value="${esc(S.ruleQ)}" autocomplete="off"></div>
-    <div class="row"><button class="chip" aria-pressed="${!S.ruleSec}" data-rsec="">Alle${tr('all')}</button>${secs.map(s => `<button class="chip" aria-pressed="${S.ruleSec === s}" data-rsec="${esc(s)}">${esc(s)}${tr(SEC_EN[s] || '')}</button>`).join('')}</div>
-    <div class="rules">${list.map(([sec, title, sub, rows, ex, en]) => `<article class="rule"><header><b>${esc(title)}</b><span>${esc(sub)}</span>${tr(esc(en[0]))}</header><div class="rows">${rows.map(([l, r, h]) => `<div><span>${esc(l)}</span><span class="${h ? 'hl' : ''}">${esc(r)}</span></div>`).join('')}</div>${ex ? `<div class="ex">${esc(ex)}${tr(esc(en[1]))}</div>` : ''}</article>`).join('') || '<p class="muted">Nichts gefunden. <i>(nothing found)</i></p>'}</div>
+  return `<div class="stack"><div><h1>Regeln</h1>${tr('rules')}<p class="lead">Tippe auf eine Regel zum Aufklappen. Rot = besonders gut merken.${tr('Tap a rule to open it. Red = especially important to remember.')}</p></div>
+    <input id="ruleq" class="inp search" placeholder="Suchen (search) …" value="${esc(S.ruleQ)}" autocomplete="off">
+    <div class="chips-scroll"><button class="chip" aria-pressed="${!S.ruleSec}" data-rsec="">Alle</button>${secs.map(s => `<button class="chip" aria-pressed="${S.ruleSec === s}" data-rsec="${esc(s)}">${esc(s)}</button>`).join('')}</div>
+    <div class="rlist">${list.map(([sec, title, sub, rows, ex, en]) => `<details class="rd"${q ? ' open' : ''}><summary><span class="lt"><b>${esc(title)}</b><span class="small">${esc(sub)}</span>${tr(esc(en[0]))}</span><span class="chev" aria-hidden="true">›</span></summary><div class="rule"><div class="rows">${rows.map(([l, r, h]) => `<div><span>${esc(l)}</span><span class="${h ? 'hl' : ''}">${esc(r)}</span></div>`).join('')}</div>${ex ? `<div class="ex">${esc(ex)}${tr(esc(en[1]))}</div>` : ''}</div></details>`).join('') || '<p class="muted">Nichts gefunden. <i>(nothing found)</i></p>'}</div>
   </div>`;
 }
 
@@ -2923,10 +3045,10 @@ function viewSprechen() {
       ${t.hint && st ? `<div class="fb fix"><b>Tipp:</b> ${esc(st.tip)}</div>` : ''}</div></div>`;
   }
   const modes = AI ? `<div class="row"><span class="small muted">Modus <i>(mode)</i></span><button class="chip" aria-pressed="${S.talkMode !== 'ai'}" data-talk-mode="guided">Geführt${tr('guided, with model answers')}</button><button class="chip" aria-pressed="${S.talkMode === 'ai'}" data-talk-mode="ai">Frei mit KI${tr('free talk with AI')}</button></div>` : '';
-  return `<div class="stack"><div><h1>Sprechen</h1>${tr('speaking')}<p class="lead">Übe mit Anna die drei Teile der mündlichen Prüfung und Alltagsgespräche. Anna fragt, du antwortest laut – mit Mikrofon oder Tastatur.${tr('Practise the three parts of the speaking exam and everyday conversations with Anna. Anna asks, you answer out loud – by microphone or keyboard.')}</p></div>
+  return `<div class="stack"><div><h1>Sprechen</h1>${tr('speaking')}<p class="lead">Anna fragt, du antwortest laut – mit Mikrofon oder Tastatur.${tr('Anna asks, you answer out loud – by microphone or keyboard.')}</p></div>
     ${modes}
-    <div class="grid">${SCENES.map(sc => { const b = P.ex['sprechen:' + sc.id]; return `<button class="ex-card" data-scene="${sc.id}"><div class="k"><h3><span aria-hidden="true">${sc.ic}</span> ${sc.name}${tr(sc.en)}</h3><span class="pill">${sc.part}</span></div><p class="num">${sc.steps.length} Fragen (questions)${b?.best != null ? ` · Bestwert (best) ${b.best}%` : ''}${b?.n ? ` · ${b.n}× geübt` : ''}</p></button>`; }).join('')}</div>
-    <p class="small muted">${AI && PWA ? 'Im Modus „Frei mit KI“ antwortet Google Gemini und korrigiert deine Sätze. Deine Sätze gehen dafür an Google – schreib nichts Privates.' + tr('In “free talk with AI” Google Gemini answers and corrects your sentences. Your sentences are sent to Google for this, so don’t write anything private.') : AI ? 'Im Modus „Frei mit KI“ antwortet Claude und korrigiert deine Sätze. Das nutzt dein eigenes Claude-Konto.' + tr('In “free talk with AI” Claude answers and corrects your sentences. This uses your own Claude account.') : CLOUD_ON ? 'Melde dich auf der Startseite an, dann kannst du auch frei mit der KI sprechen.' + tr('Sign in on the start page to unlock free talk with the AI.') : 'Anna prüft deine Antwort mit einfachen Mustern und zeigt dir immer einen Beispielsatz.' + tr('Anna checks your answer with simple patterns and always shows you a model sentence.')}</p></div>`;
+    ${[['Prüfung', 'exam parts', sc => sc.part.startsWith('Teil')], ['Alltag', 'everyday life', sc => !sc.part.startsWith('Teil')]].map(([g, en, f]) => `<div class="sec-h">${g}${tr(en)}</div><div class="list">${SCENES.filter(f).map(sc => { const b = P.ex['sprechen:' + sc.id]; return lrow(`data-scene="${sc.id}"`, sc.ic, `<b>${sc.name}</b>`, `<span class="small">${sc.part.startsWith('Teil') ? sc.part + ' · ' : ''}${sc.steps.length} Fragen${b?.n ? ` · ${b.n}× geübt` : ''}</span>${tr(sc.en)}`, b?.best != null ? bestBadge(b.best) : ''); }).join('')}</div>`).join('')}
+    <p class="small muted">${AI && PWA ? 'Im Modus „Frei mit KI“ antwortet Google Gemini und korrigiert deine Sätze. Deine Sätze gehen dafür an Google – schreib nichts Privates.' + tr('In “free talk with AI” Google Gemini answers and corrects your sentences. Your sentences are sent to Google for this, so don’t write anything private.') : AI ? 'Im Modus „Frei mit KI“ antwortet Claude und korrigiert deine Sätze. Das nutzt dein eigenes Claude-Konto.' + tr('In “free talk with AI” Claude answers and corrects your sentences. This uses your own Claude account.') : CLOUD_ON ? 'Melde dich an, dann kannst du auch frei mit der KI sprechen. <a href="#start" data-open-settings>Jetzt anmelden</a>' + tr('Sign in to unlock free talk with the AI.') : 'Anna prüft deine Antwort mit einfachen Mustern und zeigt dir immer einen Beispielsatz.' + tr('Anna checks your answer with simple patterns and always shows you a model sentence.')}</p></div>`;
 }
 if (!PWA && window.claude?.use) { try { claude.use('sample').then(f => { AI = f || null; if (AI && route() === 'sprechen' && !S.talk) render(); }).catch(() => {}); } catch (e) {} }
 
@@ -2967,9 +3089,30 @@ function annaSay(text) {
     return a.play();
   }).catch(() => { if (my === annaSeq) speak(text, true); });
 }
+/* ---------- redesign helpers ---------- */
+function setEn(on) {
+  document.documentElement.classList.toggle('no-en', !on);
+  document.querySelectorAll('[data-en-toggle]').forEach(b => b.setAttribute('aria-pressed', String(on)));
+  try { localStorage.setItem('sd1-en', on ? '1' : '0'); } catch (e) {}
+}
+try { if (localStorage.getItem('sd1-en') === '0') setEn(false); } catch (e) {}
+document.addEventListener('toggle', e => {
+  const el = e.target; if (!el.classList) return;
+  if (el.classList.contains('settings')) S.setOpen = el.open;
+  if (el.classList.contains('browse')) S.browseOpen = el.open;
+  if (el.classList.contains('exam')) S.examOpen = el.open;
+}, true);
+function greeting() {
+  const h = new Date().getHours();
+  return h < 11 ? ['Guten Morgen!', 'Good morning!'] : h < 18 ? ['Guten Tag!', 'Good afternoon!'] : ['Guten Abend!', 'Good evening!'];
+}
+const lrow = (attrs, ic, title, sub, meta, hot) => `<${attrs.startsWith('href') ? 'a' : 'button'} class="lrow" ${attrs}><span class="li${hot ? ' hot' : ''}" aria-hidden="true">${ic}</span><span class="lt">${title}${sub}</span>${meta ? `<span class="lm">${meta}</span>` : ''}<span class="chev" aria-hidden="true">›</span></${attrs.startsWith('href') ? 'a' : 'button'}>`;
+const bestBadge = b => b == null ? '<span class="badge">neu</span>' : `<span class="badge ${b >= 60 ? 'good' : 'low'} num">${b}%</span>`;
+
 function render() {
   const r = route();
-  document.querySelectorAll('.tabs a').forEach(a => a.setAttribute('aria-current', a.getAttribute('href') === '#' + r ? 'page' : 'false'));
+  document.querySelectorAll('.tabs a, .bnav a').forEach(a => a.setAttribute('aria-current', a.getAttribute('href') === '#' + r ? 'page' : 'false'));
+  document.body.classList.toggle('focus', !!((r === 'karten' && S.session && S.session.i < S.session.list.length) || (r === 'uebungen' && S.run && S.run.i < S.run.qs.length) || (r === 'sprechen' && S.talk && !S.talk.done)));
   const app = $('#app');
   app.innerHTML = r === 'karten' ? viewKarten() : r === 'uebungen' ? viewUebungen() : r === 'regeln' ? viewRegeln() : r === 'sprechen' ? viewSprechen() : viewStart();
   if (r === 'sprechen' && S.talk) { const sy = $('#say'); if (sy && S.talk.typed && !S.talk.busy) sy.focus({ preventScroll: true }); window.scrollTo(0, document.documentElement.scrollHeight); }
@@ -2983,6 +3126,9 @@ document.addEventListener('click', e => {
   const d = t.dataset;
   if (d.speak !== undefined) { e.stopPropagation(); speak(d.speak); return; }
   if (d.bk) { backup(d.bk); return; }
+  if (d.enToggle !== undefined) { setEn(document.documentElement.classList.contains('no-en')); return; }
+  if (d.openDeck) { S.deck = d.openDeck; S.theme = ''; saveUi(); startSession(d.openDeck); render(); window.scrollTo(0, 0); return; }
+  if (d.openSettings !== undefined) { e.preventDefault(); S.setOpen = true; if (route() !== 'start') location.hash = 'start'; else render(); setTimeout(() => $('.settings')?.scrollIntoView({ block: 'start' }), 60); return; }
   if (d.anna !== undefined) { e.stopPropagation(); annaSay(d.anna); return; }
   if (d.cloud) { cloudAuth(d.cloud); return; }
   if (d.scene) { talkStart(d.scene); return; }
