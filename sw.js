@@ -1,7 +1,7 @@
 /* Start Deutsch 1 Trainer – service worker.
    Saves the whole app on the phone so it opens instantly and works offline.
    The version changes with every build, so a new upload replaces the old cache. */
-const CACHE = 'sd1-64d53e6614';
+const CACHE = 'sd1-5cf419e9e7';
 const FILES = [
   "./",
   "index.html",

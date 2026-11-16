@@ -2938,6 +2938,7 @@ function talkStart(id) {
   S.talk = { id, sc, mode, i: 0, tries: 0, ok: 0, n: 0, log: [first], turns: [], opener: first.de, busy: false, done: false, hint: false, typed: false };
   S.micMsg = '';
   annaSay(first.de);
+  if (S.talk.mode === 'guided') annaPrefetch(sceneLines(sc).slice(1), 1);
   render();
 }
 function talkFinish() {
@@ -3006,7 +3007,7 @@ function micToggle() {
   try { speechSynthesis.cancel(); } catch (e) {}
   let heard = '', err = '';
   const r = new SRec(); r.lang = 'de-DE'; r.interimResults = true; r.maxAlternatives = 1;
-  r.onresult = ev => { let s = ''; for (let i = 0; i < ev.results.length; i++) s += ev.results[i][0].transcript; heard = s; const inp = $('#say'); if (inp) inp.value = s; };
+  r.onresult = ev => { let s = ''; for (let i = 0; i < ev.results.length; i++) s += ev.results[i][0].transcript; heard = s; if (ev.results[ev.results.length - 1].isFinal) { try { r.stop(); } catch (e) {} } const inp = $('#say'); if (inp) inp.value = s; };
   r.onerror = ev => { err = ev.error || 'error'; };
   r.onend = () => {
     rec = null;
@@ -3028,6 +3029,7 @@ function bubble(l) {
   return `<div class="fb ${l.ok ? 'ok' : 'fix'}"><b>${l.ok ? '✓ Gut!' : 'So kannst du es sagen:'}</b>${tr(l.ok ? 'Good! A model answer:' : 'You can say it like this:')}<div class="model">${canSpeak() ? `<button class="speak" data-speak="${esc(l.model)}" aria-label="Vorlesen">${SPEAKER}</button>` : ''}${esc(l.model)}</div>${tr(esc(l.modelEn))}</div>`;
 }
 function viewSprechen() {
+  if (!S.talk && !S.voiceWarm && annaVoiceOn()) { S.voiceWarm = true; setTimeout(() => annaPrefetch(SCENES.map(sc => stepLine(sc.steps[0]).de)), 300); }
   const t = S.talk;
   if (t) {
     const st = t.sc.steps[t.i];
@@ -3067,27 +3069,61 @@ function pcmToWav(b64, rate) {
   new Uint8Array(buf, 44).set(pcm);
   return new Blob([buf], { type: 'audio/wav' });
 }
-async function annaVoiceBlob(text) {
-  const key = 'https://voice.local/' + encodeURIComponent(text);
-  let c = null; try { c = await caches.open(VOICE_CACHE); const hit = await c.match(key); if (hit) return await hit.blob(); } catch (e) {}
+const voiceKey = text => 'https://voice.local/' + encodeURIComponent(text);
+const voiceJobs = new Map();          // text -> promise of a Blob (being made or done)
+const voiceQueue = [];                // texts waiting for the server, most urgent first
+let voiceRunning = 0;
+async function voiceCached(text) {
+  try { const c = await caches.open(VOICE_CACHE); const hit = await c.match(voiceKey(text)); return hit ? await hit.blob() : null; } catch (e) { return null; }
+}
+async function voiceFetch(text) {
   const { data, error } = await cloud.sb.functions.invoke('anna', { body: { say: text } });
   if (error || !data || !data.audio) throw new Error('voice');
   const mime = String(data.mime || '');
   const blob = /wav/i.test(mime) ? new Blob([Uint8Array.from(atob(data.audio), ch => ch.charCodeAt(0))], { type: 'audio/wav' }) : pcmToWav(data.audio, +((mime.match(/rate=(\d+)/) || [])[1] || 24000));
-  try { if (c) await c.put(key, new Response(blob, { headers: { 'Content-Type': 'audio/wav' } })); } catch (e) {}
+  try { const c = await caches.open(VOICE_CACHE); await c.put(voiceKey(text), new Response(blob, { headers: { 'Content-Type': 'audio/wav' } })); } catch (e) {}
   return blob;
 }
+function voicePump() {
+  // Free AI voice has a small per-minute limit, so lines are made one after another.
+  while (voiceRunning < 1 && voiceQueue.length) {
+    const job = voiceQueue.shift(); voiceRunning++;
+    voiceFetch(job.text).then(job.ok, job.fail).finally(() => { voiceRunning--; voicePump(); });
+  }
+}
+// prio: 2 = say now, 1 = lines of the scene in progress, 0 = warm-up. Same prio keeps its order.
+function queueJob(job) { let i = voiceQueue.findIndex(j => j.prio < job.prio); if (i < 0) i = voiceQueue.length; voiceQueue.splice(i, 0, job); }
+function annaVoiceBlob(text, prio = 0) {
+  text = String(text || '').trim(); if (!text) return Promise.reject(new Error('empty'));
+  if (voiceJobs.has(text)) {
+    const q = voiceQueue.findIndex(j => j.text === text);
+    if (q >= 0 && voiceQueue[q].prio < prio) { const job = voiceQueue.splice(q, 1)[0]; job.prio = prio; queueJob(job); }
+    return voiceJobs.get(text);
+  }
+  const p = voiceCached(text).then(hit => hit || new Promise((ok, fail) => { queueJob({ text, ok, fail, prio }); voicePump(); }));
+  p.catch(() => voiceJobs.delete(text));   // a failed line can be tried again later
+  voiceJobs.set(text, p);
+  return p;
+}
+function annaPrefetch(lines, prio = 0) { if (!annaVoiceOn()) return; for (const l of lines) annaVoiceBlob(l, prio).catch(() => {}); }
+// Every line Anna will say in a guided scene, exactly as annaSay() receives it.
+function sceneLines(sc) {
+  const out = [stepLine(sc.steps[0]).de];
+  for (let i = 1; i < sc.steps.length; i++) out.push((sc.steps[i - 1].reply ? sc.steps[i - 1].reply + ' ' : '') + stepLine(sc.steps[i]).de);
+  const last = sc.steps[sc.steps.length - 1]; if (last.reply) out.push(last.reply);
+  return out;
+}
+const VOICE_WAIT = 1200;   // ms: after this, Anna speaks with the device voice so there is never a long silence
 function annaSay(text) {
   text = String(text || '').trim(); if (!text) return;
   const my = ++annaSeq;
   try { annaAudio?.pause(); speechSynthesis.cancel(); } catch (e) {}
   if (!annaVoiceOn()) { speak(text, true); return; }
-  annaVoiceBlob(text).then(blob => {
-    if (my !== annaSeq) return;
-    const a = new Audio(URL.createObjectURL(blob)); annaAudio = a;
-    a.onended = () => URL.revokeObjectURL(a.src);
-    return a.play();
-  }).catch(() => { if (my === annaSeq) speak(text, true); });
+  const play = blob => { if (my !== annaSeq) return; const a = new Audio(URL.createObjectURL(blob)); annaAudio = a; a.onended = () => URL.revokeObjectURL(a.src); a.play().catch(() => {}); };
+  let done = false;
+  const timer = setTimeout(() => { if (!done && my === annaSeq) { done = true; speak(text, true); } }, VOICE_WAIT);
+  annaVoiceBlob(text, 2).then(blob => { if (done) return; done = true; clearTimeout(timer); play(blob); })
+    .catch(() => { if (done) return; done = true; clearTimeout(timer); if (my === annaSeq) speak(text, true); });
 }
 /* ---------- redesign helpers ---------- */
 function setEn(on) {
